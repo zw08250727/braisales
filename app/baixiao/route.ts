@@ -44,10 +44,16 @@ export async function GET() {
           .order("created_at", { ascending: false })
           .limit(20)
       : { data: [] };
+    const metadataPhone =
+      typeof user?.user_metadata?.phone === "string" ? user.user_metadata.phone : undefined;
 
     bootstrap = {
       user: user
-        ? { id: user.id, email: user.email ?? undefined, phone: user.phone ?? undefined }
+        ? {
+            id: user.id,
+            email: user.email ?? undefined,
+            phone: user.phone || metadataPhone,
+          }
         : null,
       intakes: intakes ?? [],
       agentUrls: getAgentUrls(),
