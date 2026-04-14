@@ -3097,8 +3097,6 @@ async function doLaunchAgent() {
   const url = agentUrls[activeAgentId];
   closeAgentModal();
   if (url) {
-    const blankWindow = window.open('about:blank', '_blank');
-    if (blankWindow) blankWindow.opener = null;
     showToast('正在保存表单并生成 Agent 指令...', 'info');
     try {
       const response = await fetch('/api/agent-intakes', {
@@ -3112,7 +3110,6 @@ async function doLaunchAgent() {
         })
       });
       if (response.status === 401) {
-        if (blankWindow) blankWindow.close();
         openLoginModal();
         showToast('登录已过期，请重新登录后再执行 Agent', 'error');
         return;
@@ -3127,11 +3124,9 @@ async function doLaunchAgent() {
         showToast('表单已保存，即将跳转 Agent，请手动粘贴指令', 'info');
       });
       setTimeout(() => {
-        if (blankWindow) blankWindow.location.href = finalUrl;
-        else window.open(finalUrl, '_blank');
+        window.location.href = finalUrl;
       }, 600);
     } catch (error) {
-      if (blankWindow) blankWindow.close();
       showToast(error.message || '表单保存失败，请稍后重试', 'error');
     }
   } else {
